@@ -1,0 +1,22 @@
+{
+  "name": "serviceautotest",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "codeceptjs": "^3.6.5",
+    "codeceptjs-resemblehelper": "^1.9.7",
+    "playwright": "^1.46.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
