@@ -31,5 +31,10 @@ export const config: CodeceptJS.MainConfig = {
   ],
   localhostSites: [
     "http://localhost:56993"
+  ],
+  productSites: [
+    "https://invest.viomitra.ru",
+    "https://art.viomitra.ru",
+    "https://china.viomitra.ru"
   ]
 }
