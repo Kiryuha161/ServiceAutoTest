@@ -12,15 +12,24 @@ export const config: CodeceptJS.MainConfig = {
   helpers: {
     Playwright: {
       browser: 'chromium',
-      url: 'http://localhost:56993/',
-      show: true
+      url: 'https://dev.realty.viomitra.ru/',
+      show: false,
+      restart: true
     },
     REST: {
-      endpoint: 'http://localhost:56993/', // Замените на ваш endpoint
+      endpoint: 'https://dev.realty.viomitra.ru/', 
     },
   },
   include: {
     I: './steps_file'
   },
-  name: 'ServiceAutoTest'
+  name: 'ServiceAutoTest',
+  sites: [
+      "https://dev.realty.viomitra.ru",
+      "https://dev.art.viomitra.ru",
+      "https://dev.china.viomitra.ru",
+  ],
+  localhostSites: [
+    "http://localhost:56993"
+  ]
 }
