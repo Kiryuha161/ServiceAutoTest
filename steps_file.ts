@@ -1,5 +1,6 @@
 import { setHeadlessWhen } from '@codeceptjs/configure';
 import { json } from 'stream/consumers';
+import { IAuthorizedUser } from './interfaces';
 //const assert = require('node:assert');
 // in this file you can append custom step methods to 'I' object
 
@@ -11,13 +12,12 @@ export = function () {
 
     /**
      * Входит на страницу и собирает куки авторизации с полученной страницы для тестов запросов, где требуются куки, после чего переводит это в строку и возвращает
-     * @param url адрес сайта
-     * @param username логин
-     * @param password пароль
+     * @param loginUrl адрес страницы аутентификации
+     * @param authorizedUser данные пользователя для авторизации
      * @returns возвращает строку с куками авторизации
      */
-    loginWithCookies: async function name(url: string, username: string, password: string) {
-      await this.enterToAccount(url, username, password);
+    loginWithCookies: async function name(loginUrl: string, authorizedUser: IAuthorizedUser) {
+      await this.enterToAccount(loginUrl, authorizedUser);
 
       const cookies = await this.grabCookie();
       const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
@@ -27,15 +27,14 @@ export = function () {
 
     /**
      * Вход в аккаунт без собирания куков авторизации для простых тестов, где куки не требуются
-     * @param url адрес сайта
-     * @param username логин
-     * @param password пароль
+     * @param loginUrl адрес страницы аутентификации
+     * @param authorizedUser данные пользователя для авторизации
      */
-    enterToAccount: async function name(url: string, username: string, password: string) {
-      await this.amOnPage(url);
-      await this.fillField('UserName', username);
-      await this.fillField('Password', password);
-      await this.click('Войти');
+    enterToAccount: async function name(loginUrl: string, authorizedUser: IAuthorizedUser) {
+      await this.amOnPage(loginUrl);
+      await this.fillField('UserName', authorizedUser.username);
+      await this.fillField('Password', authorizedUser.password);
+      await this.click('Войти в профиль');
     }
   });
 }

@@ -13,21 +13,26 @@ export const config: CodeceptJS.MainConfig = {
     Playwright: {
       browser: 'chromium',
       url: 'https://dev.realty.viomitra.ru/',
-      show: false,
-      restart: true
+      show: true,
+      restart: false
     },
     REST: {
-      endpoint: 'https://dev.realty.viomitra.ru/', 
+      defaultHeaders: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      },
+      endpoint: 'https://dev.realty.viomitra.ru/',
     },
+    JSONResponse: {}
   },
   include: {
     I: './steps_file'
   },
   name: 'ServiceAutoTest',
   sites: [
-      "https://dev.realty.viomitra.ru",
-      "https://dev.art.viomitra.ru",
-      "https://dev.china.viomitra.ru",
+    "https://dev.realty.viomitra.ru",
+    "https://dev.art.viomitra.ru",
+    "https://dev.china.viomitra.ru",
   ],
   localhostSites: [
     "http://localhost:56993"
