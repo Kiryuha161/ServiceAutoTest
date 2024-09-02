@@ -316,7 +316,11 @@ Feature('Создание лота через апи dev');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
     Scenario.skip(`CreateLot ${site}`, async ({ I }) => {
-        console.log("pass");
+        const requestUrl = `/TradeEditApi/SaveLot`;
+        const flags: IFlags = getFlags(false, true, true);
+        const headers = {};
+        const response = await performRequest(I, site, requestUrl, flags, headers, lot);
+        console.log(util.inspect(response.data), { depth: null, colors: true});
     })
 }
 
