@@ -160,29 +160,19 @@ const getFlags = (isChecking: boolean, isApiResult: boolean, isPost: boolean): I
 }
 //#endregion 
 
-//#region Get-запросы
-Feature('GET-запрос на страницу лота, проверка на статус');
-config.sites.forEach(site => {
-    Scenario(`tradeLotView ${site}`, async ({ I }) => {
-        const response = await I.sendGetRequest(`${site}/TradeLot/View/223`);
-        assert.equal(response.status, 200, 'Статус - не ок');
-    });
-});
-
-
+//#region UI-тесты
 Feature('Авторизация пользователя и выход из аккаунта');
-devSites.forEach(site => {
+localSites.forEach(site => {
     Scenario.skip(`authorizeUserAndQuit ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
-
+        I.wait(1);
         I.click('a[title="Выйти"]');
         I.click("Выйти");
         I.see("Присоединиться");
     });
 });
 
-
-Feature('Авторизация пользователя и покупка лота');
+Feature('Авторизация пользователя и покупка лота'); //для арта тест закончился
 for (let i = 0; i < devSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
         const site = devSites[i];
@@ -191,21 +181,63 @@ for (let i = 0; i < devSites.length; i++) {
             "/tests_2480"
         ];
 
-        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario.skip(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             I.amOnPage(`${site}${pages[i]}`);
+            I.wait(1);
             I.click('Купить сейчас');
+            I.wait(1);
             I.see('ОПЛАТА КОММИССИИ');
+            I.wait(1);
             I.click('Оплатить');
         });
     }
 }
 
+Feature('UI-тест создания лота');
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    const categoryId = 2;
+    const subcategoriesId = 147;
+    const lengthTrade = 3;
+    const isCategory = true;
+    const restartRequireValue = 0; //не перевыставляется
+    const depositRequireValue = 0; //без депозита
+    const thirdLevelCategoryId = 181;
+    const address = "г Ростов-на-Дону";
+
+    Scenario(`createLot_UI ${site}`, async ({ I }) => {
+        await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
+        I.wait(3);
+        I.clickOnNewLot();
+        
+        I.fillField('Name', 'UI-тест нового лота');
+        I.clickOnSelect('category', categoryId);
+        I.clickOnSelect('subcategory', subcategoriesId);
+        I.clickOnCheckbox(`ThirdLevelCategory${thirdLevelCategoryId}`);
+        I.fillComboBox(address);
+        I.wait(3);
+        /* I.clickOnSelect(`length-trade`, lengthTrade, !isCategory);
+        I.clickOnSelect(`restart`, restartRequireValue, !isCategory);
+        I.clickOnSelect(`deposit`, depositRequireValue, !isCategory); */
+    })
+}
+//#endregion
+
+//#region Тесты GET-запросов
+Feature('GET-запрос на страницу лота, проверка на статус');
+config.sites.forEach(site => {
+    Scenario.skip(`tradeLotView ${site}`, async ({ I }) => {
+        const response = await I.sendGetRequest(`${site}/TradeLot/View/223`);
+        assert.equal(response.status, 200, 'Статус - не ок');
+    });
+});
+
 Feature('Получение всех сервисов');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getAllServices ${site}`, async ({ I }) => {
+    Scenario.skip(`getAllServices ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetAllServices';
         await performRequest(I, site, requestUrl);
     })
@@ -214,7 +246,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по id');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
+    Scenario.skip(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'id': 2 });
@@ -225,7 +257,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по имени (Бизнес)');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getServiceByName ${site}`, async ({ I }) => {
+    Scenario.skip(`getServiceByName ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceByName?name=Бизнес';
         await performRequest(I, site, requestUrl);
     })
@@ -234,7 +266,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по orderId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
+    Scenario.skip(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServiceDetailsById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'orderId': 13 });
@@ -244,7 +276,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по accountId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
+    Scenario.skip(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServicesByAccountId';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'accountId': 1751 });
@@ -259,7 +291,7 @@ for (let i = 0; i < devSites.length; i++) {
     const documentTypeId = documentTypeIds[i];
     const site = devSites[i];
 
-    Scenario(`getDocument ${site}`, async ({ I }) => {
+    Scenario.skip(`getDocument ${site}`, async ({ I }) => {
         const requestUrl = `/DocumentApi/GetDocument?documentType=${documentTypeId}&accountId=${accountId}`;
         await performRequest(I, site, requestUrl);
     });
@@ -268,7 +300,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение информации о подписи текущего пользователя');
 for (let i = 0; i < productSites.length; i++) {
     const site = productSites[i];
-    Scenario(`GetCurrentUserSignData ${site}`, async ({ I }) => {
+    Scenario.skip(`GetCurrentUserSignData ${site}`, async ({ I }) => {
         const requestUrl = `/DocumentApi/GetCurrentUserSignData`;
         const flags = getFlags(true, false, false);
         await performRequest(I, site, requestUrl, flags);
@@ -279,7 +311,7 @@ for (let i = 0; i < productSites.length; i++) {
 Feature('Получение информации о сертификате');
 for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
-    Scenario(`CertificateInfo ${site}`, async ({ I }) => {
+    Scenario.skip(`CertificateInfo ${site}`, async ({ I }) => {
         const documentId = 103;
         const tableId = 'divDocument'
         const requestUrl = `/DocumentApi/CertificateInfo?documentId=${documentId}&tableId=${tableId}`;
@@ -289,7 +321,7 @@ for (let i = 0; i < localSites.length; i++) {
 
 //#endregion
 
-//#region Post-запросы
+//#region Тесты POST-запросы
 Feature('Создание заказа на оплату услуг dev');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];

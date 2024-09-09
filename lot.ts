@@ -251,7 +251,7 @@ const lot: ILotModel = {
     LotTradePeriodEnd: currentDate,
     LotTradePeriodStart: null,
     LotTradeStateId: 1,
-    Name: "Тест автоматизированного создания лотов",
+    Name: "Тест автоматизированного создания лотов 1",
     OldStateId: null,
     PaymentMethodId: null,
     Pictures: [],

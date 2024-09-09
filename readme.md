@@ -1,6 +1,6 @@
 1) npm init -y
 2) npm install codeceptjs playwright codeceptjs-resemblehelper
-3) npx codeceptjs run - запуск
+3) npx codeceptjs run - запуск (npx codeceptjs run --debug для отладки)
 4) npx playwright install - для загрузки браузеров
 5) для названия тестов использовать после названия _test.ts
 
