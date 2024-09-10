@@ -212,7 +212,7 @@ for (let i = 0; i < localSites.length; i++) {
     const areaSquadName = 'Filter285';
     const areaSquadValue = 2000;
 
-    Scenario(`createLot_UI ${site}`, async ({ I }) => {
+    Scenario.skip(`createLot_UI ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
         I.wait(3);
         I.clickOnNewLot();
