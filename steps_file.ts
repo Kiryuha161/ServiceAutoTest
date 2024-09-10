@@ -75,14 +75,19 @@ export = function () {
       const checkboxElement = `input[id="${attributeId}"]`
       this.checkOption(checkboxElement);
     },
-    fillComboBox: async function (value) {
+    /**
+     * Заполнение комбобокса 
+     * @param value 
+     * @param cityId 
+     */
+    fillComboBox: async function (value, cityId) { //на локалке добавил классы для обращения к элементам
       this.wait(3);
       const comboBox = '.address';
-      const dropdownItem = `.autocomplete-item:contains("${value}")`;
+      const dropdownItem = `.city${cityId}`;
       console.log(`element ${comboBox}`);
       this.fillField(comboBox, value);
-      this.wait(20);
-      //this.click(dropdownItem);
+      this.wait(10);
+      this.click(dropdownItem);
     }
   });
 }

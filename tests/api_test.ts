@@ -206,21 +206,32 @@ for (let i = 0; i < localSites.length; i++) {
     const depositRequireValue = 0; //без депозита
     const thirdLevelCategoryId = 181;
     const address = "г Ростов-на-Дону";
+    const cityId = 421965;
+    const buildSquadName = 'Filter323'; 
+    const buildSquadValue = 1000;
+    const areaSquadName = 'Filter285';
+    const areaSquadValue = 2000;
 
     Scenario(`createLot_UI ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
         I.wait(3);
         I.clickOnNewLot();
         
-        I.fillField('Name', 'UI-тест нового лота');
+        I.fillField('Name', 'Автоматизированное создание лота через UI-тест');
         I.clickOnSelect('category', categoryId);
         I.clickOnSelect('subcategory', subcategoriesId);
         I.clickOnCheckbox(`ThirdLevelCategory${thirdLevelCategoryId}`);
-        I.fillComboBox(address);
-        I.wait(3);
-        /* I.clickOnSelect(`length-trade`, lengthTrade, !isCategory);
+        I.fillComboBox(address, cityId);
+        I.fillField(buildSquadName, buildSquadValue);
+        I.fillField(areaSquadName, areaSquadValue);
+        //I.clickOnSelect(`length-trade`, lengthTrade, !isCategory);
         I.clickOnSelect(`restart`, restartRequireValue, !isCategory);
-        I.clickOnSelect(`deposit`, depositRequireValue, !isCategory); */
+        I.fillField(`BasePrice`, 30000000);
+        I.fillField('Information', 'Этот лот создан с помощью автоматизированного тестирования через UI');
+        I.clickOnSelect(`deposit`, depositRequireValue, !isCategory); 
+        I.click('Выставить лот');
+        I.wait(60);
+        I.see('ПОЗДРАВЛЯЕМ!');
     })
 }
 //#endregion
