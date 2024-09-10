@@ -163,7 +163,7 @@ const getFlags = (isChecking: boolean, isApiResult: boolean, isPost: boolean): I
 //#region UI-тесты
 Feature('Авторизация пользователя и выход из аккаунта');
 localSites.forEach(site => {
-    Scenario.skip(`authorizeUserAndQuit ${site}`, async ({ I }) => {
+    Scenario(`authorizeUserAndQuit ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
         I.wait(1);
         I.click('a[title="Выйти"]');
@@ -181,15 +181,15 @@ for (let i = 0; i < devSites.length; i++) {
             "/tests_2480"
         ];
 
-        Scenario.skip(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             I.amOnPage(`${site}${pages[i]}`);
-            I.wait(1);
+            I.wait(5);
             I.click('Купить сейчас');
-            I.wait(1);
+            I.wait(5);
             I.see('ОПЛАТА КОММИССИИ');
-            I.wait(1);
+            I.wait(5);
             I.click('Оплатить');
         });
     }
@@ -239,7 +239,7 @@ for (let i = 0; i < localSites.length; i++) {
 //#region Тесты GET-запросов
 Feature('GET-запрос на страницу лота, проверка на статус');
 config.sites.forEach(site => {
-    Scenario.skip(`tradeLotView ${site}`, async ({ I }) => {
+    Scenario(`tradeLotView ${site}`, async ({ I }) => {
         const response = await I.sendGetRequest(`${site}/TradeLot/View/223`);
         assert.equal(response.status, 200, 'Статус - не ок');
     });
@@ -248,7 +248,7 @@ config.sites.forEach(site => {
 Feature('Получение всех сервисов');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.skip(`getAllServices ${site}`, async ({ I }) => {
+    Scenario(`getAllServices ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetAllServices';
         await performRequest(I, site, requestUrl);
     })
@@ -257,7 +257,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по id');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.skip(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
+    Scenario(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'id': 2 });
@@ -268,7 +268,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по имени (Бизнес)');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.skip(`getServiceByName ${site}`, async ({ I }) => {
+    Scenario(`getServiceByName ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceByName?name=Бизнес';
         await performRequest(I, site, requestUrl);
     })
@@ -277,7 +277,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по orderId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.skip(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
+    Scenario(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServiceDetailsById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'orderId': 13 });
@@ -287,7 +287,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по accountId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.skip(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
+    Scenario(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServicesByAccountId';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'accountId': 1751 });
@@ -311,7 +311,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение информации о подписи текущего пользователя');
 for (let i = 0; i < productSites.length; i++) {
     const site = productSites[i];
-    Scenario.skip(`GetCurrentUserSignData ${site}`, async ({ I }) => {
+    Scenario(`GetCurrentUserSignData ${site}`, async ({ I }) => {
         const requestUrl = `/DocumentApi/GetCurrentUserSignData`;
         const flags = getFlags(true, false, false);
         await performRequest(I, site, requestUrl, flags);
