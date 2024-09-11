@@ -1,4 +1,4 @@
-import { setHeadlessWhen, setCommonPlugins } from '@codeceptjs/configure';
+const { setHeadlessWhen, setCommonPlugins, addPlugin } = require('@codeceptjs/configure');
 // turn on headless mode when running with HEADLESS=true environment variable
 // export HEADLESS=true && npx codeceptjs run
 setHeadlessWhen(process.env.HEADLESS);
@@ -6,14 +6,14 @@ setHeadlessWhen(process.env.HEADLESS);
 // enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
 setCommonPlugins();
 
-export const config: CodeceptJS.MainConfig = {
+exports.config = {
   tests: './tests/*_test.ts',
   output: './output',
   helpers: {
     Playwright: {
       browser: 'chromium',
       url: 'https://dev.realty.viomitra.ru/',
-      show: true,
+      show: false,
       restart: false
     },
     REST: {
@@ -22,8 +22,15 @@ export const config: CodeceptJS.MainConfig = {
         'Accept': 'application/json',
       },
       endpoint: 'https://dev.realty.viomitra.ru/',
-    },
-    JSONResponse: {}
+    }
+  },
+  plugins: {
+    coverage: {
+      enabled: true,
+      debug: true,
+      name: 'CodeceptJS Coverage Report',
+      outputDir: 'output/coverage'
+    }
   },
   include: {
     I: './steps_file'
@@ -42,4 +49,4 @@ export const config: CodeceptJS.MainConfig = {
     "https://art.viomitra.ru",
     "https://china.viomitra.ru"
   ]
-}
+};

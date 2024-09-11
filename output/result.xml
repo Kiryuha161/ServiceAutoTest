@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="2.742" tests="39" failures="1" skipped="38">
+  <testsuite name="Root Suite" timestamp="2024-09-11T07:32:17" tests="0" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Авторизация пользователя и выход из аккаунта" timestamp="2024-09-11T07:32:17" tests="1" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="2.736" failures="1">
+    <testcase name="Авторизация пользователя и выход из аккаунта: authorizeUserAndQuit http://localhost:56993" time="2.521" classname="authorizeUserAndQuit http://localhost:56993">
+      <failure message="page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:56993/Account/Login
+Call log:
+  [2m- navigating to &quot;http://localhost:56993/Account/Login&quot;, waiting until &quot;load&quot;[22m
+" type="Error"><![CDATA[page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:56993/Account/Login
+Call log:
+  [2m- navigating to "http://localhost:56993/Account/Login", waiting until "load"[22m
+
+    at Playwright.amOnPage (node_modules\codeceptjs\lib\helper\Playwright.js:968:21)
+    at Step.run (node_modules\codeceptjs\lib\step.js:123:49)
+    at C:\Users\User\source\repos\ServiceAutoTest\node_modules\codeceptjs\lib\actor.js:138:23]]></failure>
+    </testcase>
+  </testsuite>
+  <testsuite name="Авторизация пользователя и покупка лота" timestamp="2024-09-11T07:32:20" tests="2" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="UI-тест создания лота" timestamp="2024-09-11T07:32:20" tests="1" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="GET-запрос на страницу лота, проверка на статус" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.001" failures="0">
+  </testsuite>
+  <testsuite name="Получение всех сервисов" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Получение сервиса по id" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Получение сервиса по имени (Бизнес)" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Получение данных заказа услуг по orderId" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.001" failures="0">
+  </testsuite>
+  <testsuite name="Получение данных заказа услуг по accountId" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Получение документа" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Получение информации о подписи текущего пользователя" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Создание заказа на оплату услуг dev" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Создание заказа на оплату услуг localhost" timestamp="2024-09-11T07:32:20" tests="1" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Создание лота через апи dev" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Создание лота через апи localhost" timestamp="2024-09-11T07:32:20" tests="1" file="C:\Users\User\source\repos\ServiceAutoTest\tests\api_test.ts" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Открытие страницы лота" timestamp="2024-09-11T07:32:20" tests="3" file="C:\Users\User\source\repos\ServiceAutoTest\tests\openPageLot_test.ts" time="0.001" failures="0">
+  </testsuite>
+</testsuites>

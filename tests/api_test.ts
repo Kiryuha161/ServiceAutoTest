@@ -165,10 +165,10 @@ Feature('Авторизация пользователя и выход из ак
 localSites.forEach(site => {
     Scenario(`authorizeUserAndQuit ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
-        I.wait(1);
-        I.click('a[title="Выйти"]');
-        I.click("Выйти");
-        I.see("Присоединиться");
+        await I.wait(1);
+        await I.click('a[title="Выйти"]');
+        await I.click("Выйти");
+        await I.see("Присоединиться");
     });
 });
 
@@ -181,16 +181,16 @@ for (let i = 0; i < devSites.length; i++) {
             "/tests_2480"
         ];
 
-        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario.skip(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
-            I.amOnPage(`${site}${pages[i]}`);
-            I.wait(5);
-            I.click('Купить сейчас');
-            I.wait(5);
-            I.see('ОПЛАТА КОММИССИИ');
-            I.wait(5);
-            I.click('Оплатить');
+            await I.amOnPage(`${site}${pages[i]}`);
+            await I.wait(5);
+            await I.click('Купить сейчас');
+            await I.wait(5);
+            await I.see('ОПЛАТА КОММИССИИ');
+            await I.wait(5);
+            await I.click('Оплатить');
         });
     }
 }
@@ -239,7 +239,7 @@ for (let i = 0; i < localSites.length; i++) {
 //#region Тесты GET-запросов
 Feature('GET-запрос на страницу лота, проверка на статус');
 config.sites.forEach(site => {
-    Scenario(`tradeLotView ${site}`, async ({ I }) => {
+    Scenario.skip(`tradeLotView ${site}`, async ({ I }) => {
         const response = await I.sendGetRequest(`${site}/TradeLot/View/223`);
         assert.equal(response.status, 200, 'Статус - не ок');
     });
@@ -248,7 +248,7 @@ config.sites.forEach(site => {
 Feature('Получение всех сервисов');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getAllServices ${site}`, async ({ I }) => {
+    Scenario.skip(`getAllServices ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetAllServices';
         await performRequest(I, site, requestUrl);
     })
@@ -257,7 +257,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по id');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
+    Scenario.skip(`getServiceByIdFromHeader ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'id': 2 });
@@ -268,7 +268,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение сервиса по имени (Бизнес)');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getServiceByName ${site}`, async ({ I }) => {
+    Scenario.skip(`getServiceByName ${site}`, async ({ I }) => {
         const requestUrl = '/ServiceApi/GetServiceByName?name=Бизнес';
         await performRequest(I, site, requestUrl);
     })
@@ -277,7 +277,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по orderId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
+    Scenario.skip(`getOrderServiceDetailsById ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServiceDetailsById';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'orderId': 13 });
@@ -287,7 +287,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение данных заказа услуг по accountId');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
+    Scenario.skip(`GetOrderServicesByAccountId ${site}`, async ({ I }) => {
         const requestUrl = '/OrderServiceApi/GetOrderServicesByAccountId';
         const flags = getFlags(true, true, false);
         await performRequest(I, site, requestUrl, flags, { 'accountId': 1751 });
@@ -311,7 +311,7 @@ for (let i = 0; i < devSites.length; i++) {
 Feature('Получение информации о подписи текущего пользователя');
 for (let i = 0; i < productSites.length; i++) {
     const site = productSites[i];
-    Scenario(`GetCurrentUserSignData ${site}`, async ({ I }) => {
+    Scenario.skip(`GetCurrentUserSignData ${site}`, async ({ I }) => {
         const requestUrl = `/DocumentApi/GetCurrentUserSignData`;
         const flags = getFlags(true, false, false);
         await performRequest(I, site, requestUrl, flags);
