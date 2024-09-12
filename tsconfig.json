@@ -6,11 +6,12 @@
     "target": "es2018",
     "lib": ["es2018", "DOM"],
     "esModuleInterop": true,
-    "module": "commonjs",
+    "module": "CommonJS",
     "strictNullChecks": false,
     "types": ["codeceptjs", "node"],
     "declaration": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "outDir": "./tests-out"
   },
   "exclude": ["node_modules"]
 }

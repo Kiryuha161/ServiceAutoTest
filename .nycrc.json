@@ -1,0 +1,14 @@
+{
+    "all": true,
+    "include": [
+      "tests/**"
+    ],
+    "exclude": [
+      "node_modules/**"
+    ],
+    "reporter": [
+      "html",
+      "text"
+    ],
+    "report-dir": "./coverage"
+  }

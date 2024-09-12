@@ -1,4 +1,4 @@
-const { setHeadlessWhen, setCommonPlugins, addPlugin } = require('@codeceptjs/configure');
+const { setHeadlessWhen, setCommonPlugins } = require('@codeceptjs/configure');
 // turn on headless mode when running with HEADLESS=true environment variable
 // export HEADLESS=true && npx codeceptjs run
 setHeadlessWhen(process.env.HEADLESS);
@@ -6,7 +6,7 @@ setHeadlessWhen(process.env.HEADLESS);
 // enable all common plugins https://github.com/codeceptjs/configure#setcommonplugins
 setCommonPlugins();
 
-exports.config = {
+export const config: CodeceptJS.MainConfig = {
   tests: './tests/*_test.ts',
   output: './output',
   helpers: {
@@ -22,14 +22,6 @@ exports.config = {
         'Accept': 'application/json',
       },
       endpoint: 'https://dev.realty.viomitra.ru/',
-    }
-  },
-  plugins: {
-    coverage: {
-      enabled: true,
-      debug: true,
-      name: 'CodeceptJS Coverage Report',
-      outputDir: 'output/coverage'
     }
   },
   include: {
