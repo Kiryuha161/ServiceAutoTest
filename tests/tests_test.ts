@@ -5,7 +5,7 @@ import { get } from "http";
 const config = require('../codecept.conf').config;
 const assert = require('assert');
 const util = require('util'); //используется для логов
-  
+
 //#region Поля тестов
 const loginUrl: string = '/Account/Login';
 const devSites: Array<string> = config.sites;
@@ -158,12 +158,57 @@ const getFlags = (isChecking: boolean, isApiResult: boolean, isPost: boolean): I
 
     return flags;
 }
+
+/**
+ * Возвращает токен верификации
+ * @param I объект теста
+ * @param site домен, к которому идёт запрос
+ * @returns токен авторизации
+ */
+const GetAntiForgeryToken = async (I, site) => {
+    const requestTokenUrl = '/Auth/GetAntiForgeryToken';
+    const tokenFlags: IFlags = getFlags(false, false, false);
+    const token = await performRequest(I, site, requestTokenUrl, tokenFlags);
+
+    return token;
+}
+
+/**
+ * Производит авторизацию по post-запросу
+ * @param I объект теста
+ * @param site домен, к которому идёт запрос
+ * @param token токен верификации,
+ * @param isChecking проверять ли результат апи
+ * @returns в случае, если выполняется проверка функция ничего не возвращает, если проверка не должна выполняться, 
+ * то возвращает строку с куки авторизации, которую можно использовать для дальнейших действий на странице
+ */
+const AuthorizeByRequest = async (I, site, token, isChecking = false) => {
+    const requestLoginUrl = '/Auth/Login';
+    const loginFlags: IFlags = getFlags(isChecking, false, true);
+    const headers = {
+        'RequestVerificationToken': token.data
+    };
+    const body = {
+        UserName: authorizedUser.username,
+        Password: authorizedUser.password,
+        RememberMe: true
+    };
+
+    await performRequest(I, site, requestLoginUrl, loginFlags, headers, body);
+
+    if (!isChecking) {
+        const cookies = await I.grabCookie();
+        const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+
+        return cookieString;
+    }
+}
 //#endregion 
 
 //#region UI-тесты
 Feature('Открытие страницы лота');
 devSites.forEach(page => {
-    Scenario(`openLotPage ${page}`,  ({ I }) => {
+    Scenario(`openLotPage ${page}`, ({ I }) => {
         I.amOnPage(page);
         I.see("Продавец");
     });
@@ -215,7 +260,7 @@ for (let i = 0; i < localSites.length; i++) {
     const thirdLevelCategoryId = 181;
     const address = "г Ростов-на-Дону";
     const cityId = 421965;
-    const buildSquadName = 'Filter323'; 
+    const buildSquadName = 'Filter323';
     const buildSquadValue = 1000;
     const areaSquadName = 'Filter285';
     const areaSquadValue = 2000;
@@ -224,7 +269,7 @@ for (let i = 0; i < localSites.length; i++) {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
         I.wait(3);
         I.clickOnNewLot();
-        
+
         I.fillField('Name', 'Автоматизированное создание лота через UI-тест');
         I.clickOnSelect('category', categoryId);
         I.clickOnSelect('subcategory', subcategoriesId);
@@ -236,7 +281,7 @@ for (let i = 0; i < localSites.length; i++) {
         I.clickOnSelect(`restart`, restartRequireValue, !isCategory);
         I.fillField(`BasePrice`, 30000000);
         I.fillField('Information', 'Этот лот создан с помощью автоматизированного тестирования через UI');
-        I.clickOnSelect(`deposit`, depositRequireValue, !isCategory); 
+        I.clickOnSelect(`deposit`, depositRequireValue, !isCategory);
         I.click('Выставить лот');
         I.wait(60);
         I.see('ПОЗДРАВЛЯЕМ!');
@@ -345,24 +390,9 @@ Feature('Авторизация по запросу');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
     Scenario(`Authorize by request ${site}`, async ({ I }) => {
-        const requestLoginUrl = '/Auth/Login';
-        const requestTokenUrl = '/Auth/GetAntiForgeryToken';
-        const loginFlags: IFlags = getFlags(true, false, true);
-        const tokenFlags: IFlags = getFlags(false, false, false);
-        
-        const token = await performRequest(I, site, requestTokenUrl, tokenFlags);
-        
-        const headers = {
-            'RequestVerificationToken': token.data
-        };
-
-        const body = {
-            UserName: authorizedUser.username,
-            Password: authorizedUser.password,
-            RememberMe: true
-        }; 
-
-        await performRequest(I, site, requestLoginUrl, loginFlags, headers, body);
+        const token = await GetAntiForgeryToken(I, site);
+        const isChecking = true;
+        await AuthorizeByRequest(I, site, token, isChecking);
     })
 }
 
@@ -396,7 +426,7 @@ for (let i = 0; i < devSites.length; i++) {
         const flags: IFlags = getFlags(false, true, true);
         const headers = {};
         const response = await performRequest(I, site, requestUrl, flags, headers, lot);
-        console.log(util.inspect(response.data), { depth: null, colors: true});
+        console.log(util.inspect(response.data), { depth: null, colors: true });
     })
 }
 
@@ -408,7 +438,7 @@ for (let i = 0; i < localSites.length; i++) {
         const flags: IFlags = getFlags(false, true, true);
         const headers = {};
         const response = await performRequest(I, site, requestUrl, flags, headers, lot);
-        console.log(util.inspect(response.data), { depth: null, colors: true});
+        console.log(util.inspect(response.data), { depth: null, colors: true });
     })
 }
 
