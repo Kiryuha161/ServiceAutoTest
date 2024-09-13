@@ -341,6 +341,31 @@ for (let i = 0; i < localSites.length; i++) {
 //#endregion
 
 //#region Тесты POST-запросы
+Feature('Авторизация по запросу');
+for (let i = 0; i < devSites.length; i++) {
+    const site = devSites[i];
+    Scenario.only(`Authorize by request ${site}`, async ({ I }) => {
+        const requestLoginUrl = '/Auth/Login';
+        const requestTokenUrl = '/Auth/GetAntiForgeryToken';
+        const loginFlags: IFlags = getFlags(true, false, true);
+        const tokenFlags: IFlags = getFlags(false, false, false);
+        
+        const token = await performRequest(I, site, requestTokenUrl, tokenFlags);
+        
+        const headers = {
+            'RequestVerificationToken': token.data
+        };
+
+        const body = {
+            UserName: authorizedUser.username,
+            Password: authorizedUser.password,
+            RememberMe: true
+        }; 
+
+        await performRequest(I, site, requestLoginUrl, loginFlags, headers, body);
+    })
+}
+
 Feature('Создание заказа на оплату услуг dev');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
