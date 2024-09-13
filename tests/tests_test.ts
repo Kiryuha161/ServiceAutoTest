@@ -344,7 +344,7 @@ for (let i = 0; i < localSites.length; i++) {
 Feature('Авторизация по запросу');
 for (let i = 0; i < devSites.length; i++) {
     const site = devSites[i];
-    Scenario.only(`Authorize by request ${site}`, async ({ I }) => {
+    Scenario(`Authorize by request ${site}`, async ({ I }) => {
         const requestLoginUrl = '/Auth/Login';
         const requestTokenUrl = '/Auth/GetAntiForgeryToken';
         const loginFlags: IFlags = getFlags(true, false, true);
