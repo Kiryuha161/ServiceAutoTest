@@ -2,9 +2,7 @@ version: '3.8'
 
 services:
   codecept-ui:
-    build:
-      context: .                 # Указывает на текущую директорию для сборки
-      dockerfile: Dockerfile      # Имя Dockerfile, если оно отличается
+    image: api.registry.viomitra.ru/codecept:latest
     deploy:
       placement:
         constraints:
@@ -13,10 +11,10 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        - traefik.http.routers.codecept-http.rule=Host(`dev.main.viomitra.ru`)
+        - traefik.http.routers.codecept-http.rule=Host(`autotest.viomitra.ru`)
         - traefik.http.routers.codecept-http.entrypoints=http
         - traefik.http.routers.codecept-http.middlewares=https-redirect
-        - traefik.http.routers.codecept-https.rule=Host(`dev.main.viomitra.ru`)
+        - traefik.http.routers.codecept-https.rule=Host(`autotest.viomitra.ru`)
         - traefik.http.routers.codecept-https.entrypoints=https
         - traefik.http.routers.codecept-https.tls=true
         - traefik.http.routers.codecept-https.tls.certresolver=le
