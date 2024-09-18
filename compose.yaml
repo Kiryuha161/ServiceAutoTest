@@ -19,6 +19,13 @@ services:
         - traefik.http.routers.codecept-https.tls=true
         - traefik.http.routers.codecept-https.tls.certresolver=le
         - traefik.http.services.codecept.loadbalancer.server.port=3333
+      resources:
+        limits:
+          cpus: '0.5'       # Ограничение по CPU (пол-ядра)
+          memory: 2G         # Ограничение по памяти (2 GB)
+        reservations:
+          cpus: '0.25'      # Резервируемая доля CPU (четверть ядра)
+          memory: 512M      # Резервируемая память (512 MB)
     networks:
       - traefik-public
 
