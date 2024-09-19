@@ -1,22 +1,18 @@
-FROM mcr.microsoft.com/playwright:focal
+# Use the official Playwright image that matches your required version
+FROM mcr.microsoft.com/playwright:v1.46.1-jammy
 
-# Устанавливаем рабочую директорию
+# Set working directory
 WORKDIR /app
 
-# Копируем package.json и устанавливаем зависимости
+# Copy package.json and install dependencies
 COPY package*.json ./
-
-# Установка зависимостей проекта
 RUN npm install
 
-# Устанавливаем xvfb для эмуляции дисплея
-RUN apt-get update && apt-get install -y xvfb
-
-# Копирование всех файлов проекта
+# Copy the rest of the project files
 COPY . .
 
-# Открываем порт 3333 для UI
+# Expose port 3333 for UI (if needed)
 EXPOSE 3333
 
-# Команда для запуска UI через xvfb с флагом --no-sandbox
-CMD ["npx", "codecept-ui", "run"]
+# Run the CodeceptJS tests
+CMD ["npx", "codeceptjs", "run"]
