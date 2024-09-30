@@ -13,7 +13,7 @@ export const config: CodeceptJS.MainConfig = {
     Playwright: {
       browser: 'chromium',
       url: 'https://dev.realty.viomitra.ru/',
-      show: false,
+      show: true,
       restart: false
     },
     REST: {

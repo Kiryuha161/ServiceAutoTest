@@ -248,23 +248,31 @@ devSites.forEach(site => {
 });
 
 Feature('Авторизация пользователя и покупка лота'); //для арта тест закончился
-for (let i = 0; i < devSites.length; i++) {
+for (let i = 0; i < localSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
-        const site = devSites[i];
+        const site = localSites[i];
         const pages = [
             "/zemelnyj-uastok-po-adresu-g-moskva-frunzenska-naberena-30-s5-6_1025",
             "/irisy-4030sm_2471",
             ''
         ];
 
-        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario.only(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
             await I.wait(5);
             await I.click('Купить сейчас');
             await I.wait(5);
-            await I.see('ОПЛАТА КОММИССИИ');
+            await I.see('Оплатить');
+            await I.click('Оплатить');
+            await I.wait(5);
+            await I.click('Оплатить');
+            await I.wait(5);
+
+            // Переключение на новую вкладку
+            await I.switchToNextTab();
+            await I.seeElement('#lotId')
         });
     }
 }
@@ -308,9 +316,37 @@ for (let i = 0; i < localSites.length; i++) {
         I.see('ПОЗДРАВЛЯЕМ!');
     })
 }
+
+Feature("Создание похожего лота");
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    const localLotTitle = 'ТЕСТ Кадастрового номера с юр действиями';
+    Scenario.skip(`CopyLot ${site}`, async ({ I }) => {
+        await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
+        I.wait(3);
+        I.click('a[title="Моя активность"]');
+        I.click(localLotTitle);
+        I.wait(3);
+        I.click('span[class="current"]');
+        I.wait(3);
+        I.click('ul.list li[data-value="1"]');
+        I.wait(10);
+        I.click('Выставить лот');
+        I.wait(60);
+        I.see('ПОЗДРАВЛЯЕМ!');
+    })
+}
 //#endregion
 
 //#region Тесты GET-запросов
+Feature('Запрос на домен автотестов');
+Scenario.skip('autotestRequest', ({ I }) => {
+    I.amOnPage('https://autotest.viomitra.ru/?q=&m=any');
+I.haveRequestHeaders({
+    'Origin': 'https://autotest.viomitra.ru:2999'
+});
+})
+
 Feature('GET-запрос на страницу лота, проверка на статус');
 config.sites.forEach(site => {
     Scenario(`tradeLotView ${site}`, async ({ I }) => {
@@ -392,17 +428,17 @@ for (let i = 0; i < devSites.length; i++) {
     })
 }
 
-/* вопросы к апи 
+
 Feature('Получение информации о сертификате');
 for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
-    Scenario(`CertificateInfo ${site}`, async ({ I }) => {
+    Scenario.skip(`CertificateInfo ${site}`, async ({ I }) => {
         const documentId = 103;
         const tableId = 'divDocument'
         const requestUrl = `/DocumentApi/CertificateInfo?documentId=${documentId}&tableId=${tableId}`;
         await performRequest(I, site, requestUrl);
     }) 
-}   */
+}   
 
 //#endregion
 
