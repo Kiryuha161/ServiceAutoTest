@@ -1,6 +1,7 @@
 import { lot } from '../lot';
 import { IAuthorizedUser, ICreateOrderService, IFlags, IOrderServiceModel } from '../interfaces';
-import { get } from "http";
+import { get, request } from "http";
+import { url } from 'inspector';
 
 const config = require('../codecept.conf').config;
 const assert = require('assert');
@@ -142,6 +143,27 @@ const performRequest = async (I: CodeceptJS.I, site: string, requestUrl: string,
     }
 }
 
+const performPostRequest = async (I: CodeceptJS.I, site: string, requestUrl: string, flags: IFlags = defaultFlags, headers: object = {}, parameter: object = {}) => {
+    for (const [property, value] of Object.entries(headers)) {
+        await addHeader(I, property, value)
+    }
+
+    console.log(util.inspect(headers));
+
+    const body = JSON.stringify(parameter);
+    const response = I.sendPostRequest(`${site}${requestUrl}`, body, headers);
+
+    if (flags.isChecking) {
+        if (flags.isApiResult) {
+            await checkApiResult(response);
+        } else {
+            await checkWithoutApiResult(response);
+        }
+    } else {
+        return response;
+    }
+}
+
 /**
  * Возвращает объект со свойствами, определяющими будет ли проводится проверка при выполнении запроса и содержит ли ответ объект ApiResult
  * @param isChecking будет ли проводиться проверка
@@ -165,12 +187,11 @@ const getFlags = (isChecking: boolean, isApiResult: boolean, isPost: boolean): I
  * @param site домен, к которому идёт запрос
  * @returns токен авторизации
  */
-const GetAntiForgeryToken = async (I, site) => {
+const GetAntiForgeryToken = async (I: CodeceptJS.I, site: string) => {
     const requestTokenUrl = '/Auth/GetAntiForgeryToken';
-    const tokenFlags: IFlags = getFlags(false, false, false);
-    const token = await performRequest(I, site, requestTokenUrl, tokenFlags);
+    const token = await I.sendGetRequest(`${site}${requestTokenUrl}`);
 
-    return token;
+    return token.data;
 }
 
 /**
@@ -182,26 +203,27 @@ const GetAntiForgeryToken = async (I, site) => {
  * @returns в случае, если выполняется проверка функция ничего не возвращает, если проверка не должна выполняться, 
  * то возвращает строку с куки авторизации, которую можно использовать для дальнейших действий на странице
  */
-const AuthorizeByRequest = async (I, site, token, isChecking = false) => {
+const AuthorizeByRequest = async (I, site, tokenData, isChecking = false) => {
     const requestLoginUrl = '/Auth/Login';
     const loginFlags: IFlags = getFlags(isChecking, false, true);
+    const cookieString = await I.getCookieString();
     const headers = {
-        'RequestVerificationToken': token.data
+        'Content-Type': 'application/json',
+        'Cookie': cookieString,
+        'RequestVerificationToken': tokenData
     };
     const body = {
         UserName: authorizedUser.username,
         Password: authorizedUser.password,
         RememberMe: true
     };
-
-    await performRequest(I, site, requestLoginUrl, loginFlags, headers, body);
-
-    if (!isChecking) {
-        const cookies = await I.grabCookie();
-        const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
-
-        return cookieString;
+    if (isChecking) {
+        await performPostRequest(I, site, requestLoginUrl, loginFlags, headers, body);
+    } else {
+        const response = await performPostRequest(I, site, requestLoginUrl, loginFlags, headers, body);
+        console.log(util.inspect(response));
     }
+
 }
 //#endregion 
 
@@ -210,7 +232,7 @@ Feature('Открытие страницы лота');
 devSites.forEach(page => {
     Scenario(`openLotPage ${page}`, ({ I }) => {
         I.amOnPage(page);
-        I.see("Продавец");
+        I.see("Вход");
     });
 });
 
@@ -226,24 +248,31 @@ devSites.forEach(site => {
 });
 
 Feature('Авторизация пользователя и покупка лота'); //для арта тест закончился
-for (let i = 0; i < devSites.length; i++) {
+for (let i = 0; i < localSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
-        const site = devSites[i];
+        const site = localSites[i];
         const pages = [
             "/zemelnyj-uastok-po-adresu-g-moskva-frunzenska-naberena-30-s5-6_1025",
-            "/tests_2480"
+            "/irisy-4030sm_2471",
+            ''
         ];
 
-        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario.only(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
             await I.wait(5);
             await I.click('Купить сейчас');
             await I.wait(5);
-            await I.see('ОПЛАТА КОММИССИИ');
+            await I.see('Оплатить');
+            await I.click('Оплатить');
             await I.wait(5);
             await I.click('Оплатить');
+            await I.wait(5);
+
+            // Переключение на новую вкладку
+            await I.switchToNextTab();
+            await I.seeElement('#lotId')
         });
     }
 }
@@ -253,7 +282,7 @@ for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
     const categoryId = 2;
     const subcategoriesId = 147;
-    const lengthTrade = 3;
+    //const lengthTrade = 3;
     const isCategory = true;
     const restartRequireValue = 0; //не перевыставляется
     const depositRequireValue = 0; //без депозита
@@ -287,9 +316,37 @@ for (let i = 0; i < localSites.length; i++) {
         I.see('ПОЗДРАВЛЯЕМ!');
     })
 }
+
+Feature("Создание похожего лота");
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    const localLotTitle = 'ТЕСТ Кадастрового номера с юр действиями';
+    Scenario.skip(`CopyLot ${site}`, async ({ I }) => {
+        await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
+        I.wait(3);
+        I.click('a[title="Моя активность"]');
+        I.click(localLotTitle);
+        I.wait(3);
+        I.click('span[class="current"]');
+        I.wait(3);
+        I.click('ul.list li[data-value="1"]');
+        I.wait(10);
+        I.click('Выставить лот');
+        I.wait(60);
+        I.see('ПОЗДРАВЛЯЕМ!');
+    })
+}
 //#endregion
 
 //#region Тесты GET-запросов
+Feature('Запрос на домен автотестов');
+Scenario.skip('autotestRequest', ({ I }) => {
+    I.amOnPage('https://autotest.viomitra.ru/?q=&m=any');
+I.haveRequestHeaders({
+    'Origin': 'https://autotest.viomitra.ru:2999'
+});
+})
+
 Feature('GET-запрос на страницу лота, проверка на статус');
 config.sites.forEach(site => {
     Scenario(`tradeLotView ${site}`, async ({ I }) => {
@@ -362,8 +419,8 @@ for (let i = 0; i < devSites.length; i++) {
 }
 
 Feature('Получение информации о подписи текущего пользователя');
-for (let i = 0; i < productSites.length; i++) {
-    const site = productSites[i];
+for (let i = 0; i < devSites.length; i++) {
+    const site = devSites[i];
     Scenario(`GetCurrentUserSignData ${site}`, async ({ I }) => {
         const requestUrl = `/DocumentApi/GetCurrentUserSignData`;
         const flags = getFlags(true, false, false);
@@ -371,28 +428,30 @@ for (let i = 0; i < productSites.length; i++) {
     })
 }
 
-/* вопросы к апи 
+
 Feature('Получение информации о сертификате');
 for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
-    Scenario(`CertificateInfo ${site}`, async ({ I }) => {
+    Scenario.skip(`CertificateInfo ${site}`, async ({ I }) => {
         const documentId = 103;
         const tableId = 'divDocument'
         const requestUrl = `/DocumentApi/CertificateInfo?documentId=${documentId}&tableId=${tableId}`;
         await performRequest(I, site, requestUrl);
     }) 
-}   */
+}   
 
 //#endregion
 
 //#region Тесты POST-запросы
-Feature('Авторизация по запросу');
-for (let i = 0; i < devSites.length; i++) {
-    const site = devSites[i];
-    Scenario(`Authorize by request ${site}`, async ({ I }) => {
-        const token = await GetAntiForgeryToken(I, site);
+Feature('Авторизация по запросу'); //не работает
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    Scenario.skip(`Authorize by request ${site}`, async ({ I }) => {
         const isChecking = true;
-        await AuthorizeByRequest(I, site, token, isChecking);
+        await I.amOnPage(`${site}`);
+        await I.wait(5);
+        const tokenData = await GetAntiForgeryToken(I, site);
+        await AuthorizeByRequest(I, site, tokenData, isChecking);
     })
 }
 

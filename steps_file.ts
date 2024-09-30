@@ -18,13 +18,20 @@ export = function () {
      */
     loginWithCookies: async function (loginUrl: string, authorizedUser: IAuthorizedUser) {
       await this.enterToAccount(loginUrl, authorizedUser);
+      const cookieString = await this.getCookieString();
 
+      return cookieString;
+    },
+    /**
+     * Возвращает строку с куки
+     * @returns возвращает строку с куки
+     */
+    getCookieString: async function() {
       const cookies = await this.grabCookie();
       const cookieString = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
 
       return cookieString;
     },
-
     /**
      * Вход в аккаунт без собирания куков авторизации для простых тестов, где куки не требуются
      * @param loginUrl адрес страницы аутентификации
