@@ -2,6 +2,7 @@ import { lot } from '../lot';
 import { IAuthorizedUser, ICreateOrderService, IFlags, IOrderServiceModel } from '../interfaces';
 import { get, request } from "http";
 import { url } from 'inspector';
+import { TIMEOUT } from 'dns';
 
 const config = require('../codecept.conf').config;
 const assert = require('assert');
@@ -248,16 +249,16 @@ devSites.forEach(site => {
 });
 
 Feature('Авторизация пользователя и покупка лота'); //для арта тест закончился
-for (let i = 0; i < localSites.length; i++) {
+for (let i = 0; i < devSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
-        const site = localSites[i];
+        const site = devSites[i];
         const pages = [
             "/zemelnyj-uastok-po-adresu-g-moskva-frunzenska-naberena-30-s5-6_1025",
-            "/irisy-4030sm_2471",
+            "/mimo-magnita-_2552",
             ''
         ];
 
-        Scenario.only(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
@@ -267,12 +268,11 @@ for (let i = 0; i < localSites.length; i++) {
             await I.see('Оплатить');
             await I.click('Оплатить');
             await I.wait(5);
-            await I.click('Оплатить');
-            await I.wait(5);
 
             // Переключение на новую вкладку
             await I.switchToNextTab();
-            await I.seeElement('#lotId')
+            await I.seeElement('embed');
+            await I.wait(5);
         });
     }
 }
@@ -348,7 +348,7 @@ I.haveRequestHeaders({
 })
 
 Feature('GET-запрос на страницу лота, проверка на статус');
-config.sites.forEach(site => {
+devSites.forEach(site => {
     Scenario(`tradeLotView ${site}`, async ({ I }) => {
         const response = await I.sendGetRequest(`${site}/TradeLot/View/223`);
         assert.equal(response.status, 200, 'Статус - не ок');

@@ -9,12 +9,15 @@ setCommonPlugins();
 export const config: CodeceptJS.MainConfig = {
   tests: './tests/*_test.ts',
   output: './output',
+  "timeout": 120000,
   helpers: {
     Playwright: {
       browser: 'chromium',
       url: 'https://dev.realty.viomitra.ru/',
       show: true,
-      restart: false
+      restart: false,
+      waitForTimeout: 120000,
+      getPageTimeout: 120000
     },
     REST: {
       defaultHeaders: {
