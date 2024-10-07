@@ -39,7 +39,6 @@ export = function () {
      */
     enterToAccount: async function (loginUrl: string, authorizedUser: IAuthorizedUser) {
       await this.amOnPage(loginUrl);
-      await this.wait(15);
       await this.fillField('UserName', authorizedUser.username);
       await this.fillField('Password', authorizedUser.password);
       await this.click('Войти в профиль');
@@ -49,7 +48,6 @@ export = function () {
      */
     clickOnNewLot: async function () {
       this.click('Новый лот');
-      this.wait(3);
       this.see('РАЗМЕСТИТЬ НОВЫЙ ЛОТ');
     },
     /**
@@ -68,7 +66,6 @@ export = function () {
 
       const listOptions = `${selectElement}.open .list`;
       const choicedOption = `${listOptions} .option[data-value="${valueId}"]`;
-      this.wait(3);
 
       this.click(selectElement);
       this.waitForElement(listOptions, 10);
@@ -88,12 +85,10 @@ export = function () {
      * @param cityId 
      */
     fillComboBox: async function (value, cityId) { //на локалке добавил классы для обращения к элементам
-      this.wait(3);
       const comboBox = '.address';
       const dropdownItem = `.city${cityId}`;
       console.log(`element ${comboBox}`);
       this.fillField(comboBox, value);
-      this.wait(10);
       this.click(dropdownItem);
     }
   });

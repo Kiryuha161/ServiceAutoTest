@@ -241,7 +241,6 @@ Feature('Авторизация пользователя и выход из ак
 devSites.forEach(site => {
     Scenario(`authorizeUserAndQuit ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
-        await I.wait(1);
         await I.click('a[title="Выйти"]');
         await I.click("Выйти");
         await I.see("Присоединиться");
@@ -262,17 +261,14 @@ for (let i = 0; i < devSites.length; i++) {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
-            await I.wait(5);
             await I.click('Купить сейчас');
-            await I.wait(5);
             await I.see('Оплатить');
             await I.click('Оплатить');
-            await I.wait(5);
 
             // Переключение на новую вкладку
             await I.switchToNextTab();
             await I.seeElement('embed');
-            await I.wait(5);
+            await I.dontSee('Не удалось');
         });
     }
 }
@@ -296,7 +292,6 @@ for (let i = 0; i < localSites.length; i++) {
 
     Scenario.skip(`createLot_UI ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
-        I.wait(3);
         I.clickOnNewLot();
 
         I.fillField('Name', 'Автоматизированное создание лота через UI-тест');
@@ -312,7 +307,6 @@ for (let i = 0; i < localSites.length; i++) {
         I.fillField('Information', 'Этот лот создан с помощью автоматизированного тестирования через UI');
         I.clickOnSelect(`deposit`, depositRequireValue, !isCategory);
         I.click('Выставить лот');
-        I.wait(60);
         I.see('ПОЗДРАВЛЯЕМ!');
     })
 }
@@ -323,16 +317,11 @@ for (let i = 0; i < localSites.length; i++) {
     const localLotTitle = 'ТЕСТ Кадастрового номера с юр действиями';
     Scenario.skip(`CopyLot ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
-        I.wait(3);
         I.click('a[title="Моя активность"]');
         I.click(localLotTitle);
-        I.wait(3);
         I.click('span[class="current"]');
-        I.wait(3);
         I.click('ul.list li[data-value="1"]');
-        I.wait(10);
         I.click('Выставить лот');
-        I.wait(60);
         I.see('ПОЗДРАВЛЯЕМ!');
     })
 }

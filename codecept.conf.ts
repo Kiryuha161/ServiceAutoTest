@@ -15,7 +15,7 @@ export const config: CodeceptJS.MainConfig = {
       browser: 'chromium',
       url: 'https://dev.realty.viomitra.ru/',
       show: true,
-      restart: false,
+      restart: true,
       waitForTimeout: 120000,
       getPageTimeout: 120000
     },
