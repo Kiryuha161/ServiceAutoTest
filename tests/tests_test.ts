@@ -241,6 +241,7 @@ Feature('Авторизация пользователя и выход из ак
 devSites.forEach(site => {
     Scenario(`authorizeUserAndQuit ${site}`, async ({ I }) => {
         await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
+        await I.waitForElement("a[title='Выйти']");
         await I.click('a[title="Выйти"]');
         await I.click("Выйти");
         await I.see("Присоединиться");
@@ -257,7 +258,7 @@ for (let i = 0; i < devSites.length; i++) {
             ''
         ];
 
-        Scenario.only(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
@@ -420,8 +421,8 @@ for (let i = 0; i < devSites.length; i++) {
 
 
 Feature('Получение информации о сертификате');
-for (let i = 0; i < localSites.length; i++) {
-    const site = localSites[i];
+for (let i = 0; i < devSites.length; i++) {
+    const site = devSites[i];
     Scenario.skip(`CertificateInfo ${site}`, async ({ I }) => {
         const documentId = 103;
         const tableId = 'divDocument'
@@ -434,8 +435,8 @@ for (let i = 0; i < localSites.length; i++) {
 
 //#region Тесты POST-запросы
 Feature('Авторизация по запросу'); //не работает
-for (let i = 0; i < localSites.length; i++) {
-    const site = localSites[i];
+for (let i = 0; i < devSites.length; i++) {
+    const site = devSites[i];
     Scenario.skip(`Authorize by request ${site}`, async ({ I }) => {
         const isChecking = true;
         await I.amOnPage(`${site}`);
@@ -457,8 +458,8 @@ for (let i = 0; i < devSites.length; i++) {
 }
 
 Feature('Создание заказа на оплату услуг localhost');
-for (let i = 0; i < localSites.length; i++) {
-    const site = localSites[i];
+for (let i = 0; i < devSites.length; i++) {
+    const site = devSites[i];
     Scenario.skip(`CreateOrder ${site}`, async ({ I }) => {
         const requestUrl = "/OrderServiceApi/CreateOrder";
         const flags: IFlags = getFlags(true, true, true);

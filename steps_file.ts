@@ -39,7 +39,9 @@ export = function () {
      */
     enterToAccount: async function (loginUrl: string, authorizedUser: IAuthorizedUser) {
       await this.amOnPage(loginUrl);
+      await this.waitForElement("input[name='UserName']");
       await this.fillField('UserName', authorizedUser.username);
+      await this.waitForElement("input[name='Password']");
       await this.fillField('Password', authorizedUser.password);
       await this.click('Войти в профиль');
     },
