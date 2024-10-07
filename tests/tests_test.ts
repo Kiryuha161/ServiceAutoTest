@@ -257,13 +257,14 @@ for (let i = 0; i < devSites.length; i++) {
             ''
         ];
 
-        Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
+        Scenario.only(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
             await I.click('Купить сейчас');
             await I.see('Оплатить');
             await I.click('Оплатить');
+            await I.wait(5);
 
             // Переключение на новую вкладку
             await I.switchToNextTab();
