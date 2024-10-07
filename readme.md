@@ -12,6 +12,24 @@
 6) npm run test:coverage - запуск через консоль, но с добавлением покрытия (скрипт в package.json)
 7) (не факт, что нормально работает) npm run test:ui:coverage - запуск через пользовательский интерфейс, но с добавлением покрытия (скрипт в package.json) 
 8) npx codeceptjs run --grep "getServiceByName" - запуск тестов, содержащих в названии строки, указанные в кавычках
+9) npx codeceptjs run --reporter xunit - запуск с отчётом в нижеприведённом формате: 
+****************************************************************************************
+9.1) основная информация <testsuite name="Mocha Tests" tests="51" failures="0" errors="1" skipped="19" timestamp="Mon, 07 Oct 2024 13:21:02 GMT" time="249.304">
+
+9.2) информация по сценарию <testcase classname="&#x41E;&#x442;&#x43A;&#x440;&#x44B;&#x442;&#x438;&#x435; &#x441;&#x442;&#x440;&#x430;&#x43D;&#x438;&#x446;&#x44B; &#x43B;&#x43E;&#x442;&#x430;:" name="openLotPage https://dev.realty.viomitra.ru" file="C:\Users\User\source\repos\ServiceAutoTest\tests\tests_test.ts" time="3.952"/>
+
+9.3) информация об ошибке <testcase classname="&#x41F;&#x43E;&#x43B;&#x443;&#x447;&#x435;&#x43D;&#x438;&#x435; &#x434;&#x43E;&#x43A;&#x443;&#x43C;&#x435;&#x43D;&#x442;&#x430;:" name="getDocument https://dev.art.viomitra.ru" file="C:\Users\User\source\repos\ServiceAutoTest\tests\tests_test.ts" time="7.875"><failure>Field &#x22;Password&#x22; was not found by text|CSS|XPath
+Error: Field &#x22;Password&#x22; was not found by text|CSS|XPath
+    at new ElementNotFound (node_modules\codeceptjs\lib\helper\errors\ElementNotFound.js:15:11)
+    at assertElementExists (node_modules\codeceptjs\lib\helper\Playwright.js:3742:11)
+    at Playwright.fillField (node_modules\codeceptjs\lib\helper\Playwright.js:1741:5)
+    at async Actor.enterToAccount (steps_file.ts:45:7)
+    at async Actor.loginWithCookies (steps_file.ts:20:7)
+    at async getResponseWithCookie (tests\tests_test.ts:71:26)
+    at async performRequest (tests\tests_test.ts:131:20)
+    at async Test.&#x3C;anonymous&#x3E; (tests\tests_test.ts:408:9)</failure></testcase>
+*****************************************************************************************
+
 
 ИНСТРУКЦИИ:
 1) При создании нового файла с тестами, он должен заканчиваться на _test.ts, например, authorize_test.ts
