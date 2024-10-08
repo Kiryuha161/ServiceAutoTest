@@ -431,6 +431,16 @@ for (let i = 0; i < devSites.length; i++) {
     }) 
 }   
 
+Feature('Получение статуса подписи при полной регистрации (заполнение данных профиля и выбор сертификата)');
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    Scenario.only(`GetSignatureStatus ${site}`, async ({ I }) => {
+        const responseUrl = '/ProfileApi/GetCertificateStatus';
+        const flags = getFlags(true, false, false);
+        await performRequest(I, site, responseUrl, flags);
+    })
+}
+
 //#endregion
 
 //#region Тесты POST-запросы
