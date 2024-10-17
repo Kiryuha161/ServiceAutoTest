@@ -204,7 +204,7 @@ const GetAntiForgeryToken = async (I: CodeceptJS.I, site: string) => {
  * @returns в случае, если выполняется проверка функция ничего не возвращает, если проверка не должна выполняться, 
  * то возвращает строку с куки авторизации, которую можно использовать для дальнейших действий на странице
  */
-const AuthorizeByRequest = async (I, site, tokenData, isChecking = false) => {
+const AuthorizeByRequest = async (I: CodeceptJS.I, site: string, tokenData: string, isChecking = false) => {
     const requestLoginUrl = '/Auth/Login';
     const loginFlags: IFlags = getFlags(isChecking, false, true);
     const cookieString = await I.getCookieString();
@@ -225,6 +225,28 @@ const AuthorizeByRequest = async (I, site, tokenData, isChecking = false) => {
         console.log(util.inspect(response));
     }
 
+}
+
+/**
+ * Проверка требуемого и нежелательного элемента в новой вкладке
+ * @param I объект теста
+ * @param expectedElement ожидаемый элемент
+ * @param unexpectedElement неделательный элемент
+ */
+const checkToNextTabElement = async (I: CodeceptJS.I, expectedElement, unexpectedElement ) => {
+    await I.switchToNextTab();
+    await I.seeElement(expectedElement);
+    await I.dontSee(unexpectedElement);
+}
+
+/**
+ * Клик по элементу, предварительно с проверкой его наличия
+ * @param I объект теста
+ * @param element элемент, который нужно проверить
+ */
+const clickWithSee = async (I: CodeceptJS.I, element) => {
+    await I.see(element);
+    await I.click(element);
 }
 //#endregion 
 
@@ -248,7 +270,7 @@ devSites.forEach(site => {
     });
 });
 
-Feature('Авторизация пользователя и покупка лота'); //для арта тест закончился
+Feature('Авторизация пользователя и оплату комиссии и лота через платёжку'); //для арта тест закончился
 for (let i = 0; i < devSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
         const site = devSites[i];
@@ -258,19 +280,70 @@ for (let i = 0; i < devSites.length; i++) {
             ''
         ];
 
+        const expectedElement = "embed";
+        const unexpectedElement = "Не удалось";
+        const expectedButtonName = "Оплатить платёжкой";
+
         Scenario(`authorizeUserAndBuyLot ${site}`, async ({ I }) => {
             await I.enterToAccount(`${site}${loginUrl}`, authorizedUser);
 
             await I.amOnPage(`${site}${pages[i]}`);
             await I.click('Купить сейчас');
-            await I.see('Оплатить');
-            await I.click('Оплатить');
+            await clickWithSee(I, expectedButtonName);
             await I.wait(5);
 
             // Переключение на новую вкладку
-            await I.switchToNextTab();
-            await I.seeElement('embed');
+            await checkToNextTabElement(I, expectedElement, unexpectedElement);
+
+            await I.switchToPreviousTab();
+            await clickWithSee(I, expectedButtonName);
+            await I.wait(5);
+
+            await checkToNextTabElement(I, expectedElement, unexpectedElement);
+            await I.wait(5);
+        });
+    }
+}
+
+Feature('Авторизация пользователя и оплата лота и комиссии через qr-код'); //для арта тест закончился
+for (let i = 0; i < devSites.length; i++) {
+    if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
+        const site = devSites[i];
+        const pages = [
+            "/testovyj-lot-dl-proverki-qr-kodov-_1096",
+            "/mimo-magnita-_2552",
+            ''
+        ];
+
+        //При необходимости можно подставить своё значение или поле модуля, я добавил это сюда, потому что authorizedUser - продавец и не может купить у себя
+        const newAuthorizedUser: IAuthorizedUser = {
+            username: 'param0n61@yandex.ru',
+            password: '25031993Pko'
+        }
+
+        const expectedButtonPay = "Оплатить QR-кодом";
+        const expectedButtonCheck = "Проверить оплату"
+
+        Scenario(`authorizeUserAndPayComissionAndLotByQr ${site}`, async ({ I }) => {
+            await I.enterToAccount(`${site}${loginUrl}`, newAuthorizedUser);
+
+            await I.amOnPage(`${site}${pages[i]}`);
+            await I.click('Купить сейчас');
+            await clickWithSee(I, expectedButtonPay);
+            await I.wait(5);
+
+            await I.seeElement('img');
+            await I.see('Общество с ограниченной ответственностью "Митра"');
             await I.dontSee('Не удалось');
+            await I.wait(10);
+            await clickWithSee(I, expectedButtonCheck);
+            await I.wait(5);
+
+            await clickWithSee(I, expectedButtonPay);
+            await I.wait(10);
+            await I.seeElement('img');
+            await I.see('ИНН');
+            await I.dontSee('Общество с ограниченной ответственностью "Митра"');
         });
     }
 }
@@ -501,5 +574,4 @@ for (let i = 0; i < localSites.length; i++) {
         console.log(util.inspect(response.data), { depth: null, colors: true });
     })
 }
-
 //#endregion
