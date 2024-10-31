@@ -574,4 +574,57 @@ for (let i = 0; i < localSites.length; i++) {
         console.log(util.inspect(response.data), { depth: null, colors: true });
     })
 }
+
+Feature("Создание черновика заявки SmartDeal (не доделан)");
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    Scenario.skip(`CreateSignatureRequest ${site}`, async ({ I }) => {
+        const requestUrl = `/SmartDealApi/SignatureRequest`;
+        const flags: IFlags = getFlags(true, true, true);
+        const headers = {};
+        const body = {
+            "FirstName": "Денис",
+            "LastName": "Конопелькин",
+            "Patronymic": "Александрович",
+            "Phone": "78005057515",
+            "Snils": "123-456-789 12",
+            "Gender": 1,
+            "birthday": "2004-09-23",
+            "birthplace": "г. Гомель",
+            "address": "Ростовская обл., г. Волгодонск, ул. М.Горького, д. 169, кв. 61",
+            "email": "konopelkindenis@gmail.com",
+            "inn": "7721581040",
+            "citizenship": 33,
+            "NotInclineSurname": false,
+            "IdentificationDocument": {
+                "type": 1,
+                "IssuedBy": "РОВД г. Гомель",
+                "IssuedDate": "2015-09-23",
+                "number": "78005057515",
+                "series": "HB",
+                "SubdivisionCode": "49832347"
+            }
+        }
+         const response = await performRequest(I, site, requestUrl, flags, headers, body);
+         console.log(util.inspect(response.data), { depth: null, colors: true });
+     })
+}
+
+Feature("Внесение документа паспорта в заявку SmartDeal (не доделан)");
+for (let i = 0; i < localSites.length; i++) {
+    const site = localSites[i];
+    Scenario(`SendDocumentScan ${site}`, async ({ I }) => {
+        const fs = require('fs');
+        const requestUrl = `/SmartDealApi/SendDocumentScan`;
+        const filePath = 'D:\\Project\\testFile.pdf';
+        const flags: IFlags = getFlags(false, true, true);
+        const headers = {};
+        const body = {
+            "DocumentType": 0,
+            "ByteDocument":  fs.createReadStream(filePath)
+        }
+         const response = await performRequest(I, site, requestUrl, flags, headers, body);
+         console.log(util.inspect(response.data), { depth: null, colors: true });
+     })
+}
 //#endregion
