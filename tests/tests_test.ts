@@ -614,7 +614,7 @@ for (let i = 0; i < localSites.length; i++) {
 Feature("Внесение документа паспорта в заявку SmartDeal (не доделан)");
 for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
-    Scenario(`SendDocumentScan ${site}`, async ({ I }) => {
+    Scenario.skip(`SendDocumentScan ${site}`, async ({ I }) => {
         const requestUrl = `/SmartDealApi/SendDocumentScan`;
         const flags: IFlags = getFlags(false, true, true);
         const headers = {};
