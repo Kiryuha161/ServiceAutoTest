@@ -311,7 +311,7 @@ for (let i = 0; i < devSites.length; i++) {
     if (i !== 2) { // не перебирает Viomitra.China, так как там нет страниц с возможностью "Купить сейчас"
         const site = devSites[i];
         const pages = [
-            "/testovyj-lot-dl-proverki-qr-kodov-_1096",
+            "/zemelnyj-uastok-11ga-kaluska-oblast_1069",
             "/mimo-magnita-_2552",
             ''
         ];
