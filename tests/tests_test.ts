@@ -3,6 +3,7 @@ import { IAuthorizedUser, ICreateOrderService, IFlags, IOrderServiceModel } from
 import { get, request } from "http";
 import { url } from 'inspector';
 import { TIMEOUT } from 'dns';
+import { buffer } from 'stream/consumers';
 
 const config = require('../codecept.conf').config;
 const assert = require('assert');
@@ -613,15 +614,16 @@ for (let i = 0; i < localSites.length; i++) {
 Feature("Внесение документа паспорта в заявку SmartDeal (не доделан)");
 for (let i = 0; i < localSites.length; i++) {
     const site = localSites[i];
-    Scenario(`SendDocumentScan ${site}`, async ({ I }) => {
-        const fs = require('fs');
+    Scenario.skip(`SendDocumentScan ${site}`, async ({ I }) => {
         const requestUrl = `/SmartDealApi/SendDocumentScan`;
-        const filePath = 'D:\\Project\\testFile.pdf';
         const flags: IFlags = getFlags(false, true, true);
         const headers = {};
+        //нужно передавать массивы в base64
+        const byteDocument = [49, 48, 58, 50, 52, 58, 50, 54]
+        const base64String = btoa(String.fromCharCode.apply(null, byteDocument));
         const body = {
-            "DocumentType": 0,
-            "ByteDocument":  fs.createReadStream(filePath)
+            DocumentType: 0,
+             ByteDocument: base64String
         }
          const response = await performRequest(I, site, requestUrl, flags, headers, body);
          console.log(util.inspect(response.data), { depth: null, colors: true });
