@@ -1,9 +1,9 @@
-УСТАНОВКА БИБЛИОТЕК:
+# УСТАНОВКА БИБЛИОТЕК:
 1) npm init -y
 2) npm install codeceptjs @codeceptjs/ui playwright codeceptjs-resemblehelper nyc
 3) npx playwright install - для загрузки браузеров
 
-ЗАПУСК:
+# ЗАПУСК:
 1) npx codeceptjs run - обычный запуск в консоли
 2) npx codeceptjs run --debug - запуск в консоли с перечислением шагов
 3) npx codeceptjs run --verbose - запуск в консоли с более подробным перечислением шагов
@@ -31,7 +31,7 @@ Error: Field &#x22;Password&#x22; was not found by text|CSS|XPath
 *****************************************************************************************
 
 
-ИНСТРУКЦИИ:
+# ИНСТРУКЦИИ:
 1) При создании нового файла с тестами, он должен заканчиваться на _test.ts, например, authorize_test.ts
 2) Конфигурация codecepts в codecept.conf.ts
 3) Кастомные методы в /steps_file.ts или в самом файле, где сценарии. В первом случае вызов через объект теста I (I.something), во втором something.
@@ -46,7 +46,7 @@ Error: Field &#x22;Password&#x22; was not found by text|CSS|XPath
 12) При запуске всех тестов, некоторые тесты могут проваливаться, можно их запустить через UI и удобно запустить отдельно блоки кода и добрать неудавшиеся тесты.
 13) Также отдельные тесты можно запустить с помощью команды npx codeceptjs run --grep "getServiceByName", где в кавычках название сценария (наличие данных строк в названии сценария (contains))
 
-СТРУКТУРА ТЕСТОВ:
+# СТРУКТУРА ТЕСТОВ:
 1) Feature('Группировка связанных сценариев')
 2) Scenario('Конкретный сценарий', ({ I }) => {})
 3) I - объект codeceptjs, через который вызываются методы
@@ -55,14 +55,14 @@ Error: Field &#x22;Password&#x22; was not found by text|CSS|XPath
 6) Библиотека assert для проверки условий в тестах
 7) Модуль config для обращения к свойствам конфигурации (codecept.conf.ts)
 
-ОТЛАДКА:
+# ОТЛАДКА:
 1) npx codeceptjs run --debug - запуск в консоли с перечислением шагов
 2) npx codeceptjs run --verbose - запуск в консоли с более подробным перечислением шагов
 3) console.log(util.inspect(response.data, { depth: null, colors: true })); - логи в консоль при больших json-файлах
 4) util.inspect - функция библиотеки, позволяющая обойти цикличность в json-файле и отобразить его без ошибок в читаемом формате
 5) Свойство depth указывает глубину вложенности, colors - выделение цветом для читаемости
 
-СПИСОК ПРОБЛЕМНЫХ АПИ:
+# СПИСОК ПРОБЛЕМНЫХ АПИ:
 1) /OrderServiceApi/GetPurchasedServicesByAccountId - нет апи для получения аккаунта по хешу
 2) /DocumentApi/CertificateInfo - возвращает 204 (No Content, не ищет документ, который есть в базе)
 
